@@ -1,6 +1,5 @@
 import json
 import requests
-import time
 
 # Parse Packages file
 def parse_packages_file(file_path):
@@ -28,7 +27,7 @@ def parse_packages_file(file_path):
                 package[key.strip()] = value.strip()
         if package:
             packages.append(package)
-    print(f"Parsed {len(packages)} packages.")  # Debug output
+    print(f"Parsed {len(packages)} packages.")
     return packages
 
 # Query OSV API in batch
@@ -83,10 +82,7 @@ def find_vulnerable_packages_batch(packages):
                         "version": package["Version"],
                         "vulnerabilities": result["vulnerabilities"],
                     })
-        else:
-            print(f"Batch {i // batch_size + 1} failed.")
         print(f"{(i + batch_size) / len(packages) * 100:.2f}% done")  # Progress update
-        # time.sleep(1)  # Pause to avoid rate-limiting
     return results
 
 if __name__ == "__main__":
