@@ -1,0 +1,44 @@
+[
+    {
+        "Navn": "",
+        "UnikID": 0,
+        "Naboer": ["2"],
+        "Samlepost": "10.10.0.34/32"
+    },
+    {
+        "Navn": "S",
+        "UnikID": 1,
+        "Naboer": ["2", "5"],
+        "Samlepost": "341"
+    },
+    {
+        "Navn": "R",
+        "UnikID": 2,
+        "Naboer": ["0", "1", "4"],
+        "Samlepost": "10.12.0.0/22"
+    },
+    {
+        "Navn": "",
+        "UnikID": 3,
+        "Naboer": [],
+        "Samlepost": "10.12.3.211/32"
+    },
+    {
+        "Navn": "",
+        "UnikID": 4,
+        "Naboer": ["2", "5"],
+        "Samlepost": "192.168.3.10/32"
+    },
+    {
+        "Navn": "S",
+        "UnikID": 5,
+        "Naboer": ["1", "4"],
+        "Samlepost": "2052"
+    },
+    {
+        "Navn": "",
+        "UnikID": 6,
+        "Naboer": ["1"],
+        "Samlepost": "192.168.3.10/31"
+    }
+]
