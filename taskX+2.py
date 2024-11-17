@@ -2,6 +2,14 @@ import json
 import ipaddress
 import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    filename='taskX+2.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 class Node:
     """
     Representerer en node i en graf.
@@ -65,7 +73,7 @@ def er_gyldig_sti(sti, noder):
     Returns:
         bool: True hvis stien er gyldig, ellers False.
     """
-    # 1. Ingen noder kan besøkes to ganger i samme sti.
+    # 1. Ingen noder kan besøkes to ganger i samme sti.    
     if len(sti) != len(set(sti)):
         return False
     
@@ -82,8 +90,6 @@ def er_gyldig_sti(sti, noder):
     
     # 3. ""- og "R"-noder sin CIDR-range kan ikke overlappe.
     def cidr_overlap(cidr1, cidr2):
-        # Eksempelimplementasjon av CIDR-sjekk (bruk bibliotek hvis tilgjengelig)
-        import ipaddress
         return ipaddress.ip_network(cidr1).overlaps(ipaddress.ip_network(cidr2))
     
     for node_id in sti:
@@ -92,14 +98,21 @@ def er_gyldig_sti(sti, noder):
             for node_id2 in sti:
                 other_node = next(node for node in noder if node.unikID == node_id2)
                 if other_node.navn == "R" and cidr_overlap(current_node.samlepost, other_node.samlepost):
+                    logger.warning(f"Node {current_node.samlepost} overlapper {other_node.samlepost}.")
                     return False
     
-    # 4. "S"- til "S"-node stier må ha samme samlepost.
-    s_nodes = [node for node in noder if node.navn == "S" and node.unikID in sti]
-    if len(s_nodes) > 1:
-        samleposter = {node.samlepost for node in s_nodes}
-        if len(samleposter) > 1:
-            return False
+    # 4. "S"- til "S"-node stier må ha samme samlepost
+    for i in range(len(sti) - 1):
+        node_id = sti[i]
+        neste_node_id = sti[i + 1]
+        
+        # Sjekk om begge nodene er "S"-noder
+        node = noder[node_id]
+        neste_node = noder[neste_node_id]
+        
+        if node.navn == "S" and neste_node.navn == "S":
+            if node.samlepost != neste_node.samlepost:
+                return False
     
     return True
 
@@ -128,10 +141,11 @@ def finn_alle_stier(noder):
         # Hvis stien ender i en "", vurder den som komplett
         if siste_node.navn == "" and len(aktiv_sti) > 1:
             if er_gyldig_sti(aktiv_sti, noder):
+                #TODO: Ikke ideelt at stien først sjekkes om er gyldig når den har kommet til endenoden.
                 stier.append(list(aktiv_sti))
             return
         
-        # Utforsk naboer rekursivt (med backtracking)
+        # Utforsk naboer rekursivt med backtracking
         for nabo_id in siste_node.naboer:
             if nabo_id not in besøkte:
                 aktiv_sti.append(nabo_id)
@@ -193,6 +207,8 @@ def main():
         stier = finn_alle_stier(noder)
         logger.info(f"Antall gyldige stier funnet: {len(stier)}")
 
+        #TODO: Mangler funksjonalitet som sorterer stier etter vekt.
+
         if len(stier) > 0:
             for sti in stier:
                 print(sti)
@@ -203,17 +219,6 @@ def main():
         logger.error(f"En feil oppstod: {e}")
 
 if __name__ == "__main__":
-    """
-    Konfigurerer logging og starter hovedprogrammet.
-    """
-    logger = logging.getLogger(__name__)
-    logging.basicConfig(
-        filename='taskX+2.log', 
-        level=logging.DEBUG,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
-
     logger.info('Started')
     main()
     logger.info('Finished')

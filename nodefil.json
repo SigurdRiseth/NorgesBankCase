@@ -39,6 +39,6 @@
         "Navn": "",
         "UnikID": 6,
         "Naboer": ["1"],
-        "Samlepost": "192.168.3.10/31"
+        "Samlepost": "192.168.3.10/32"
     }
 ]

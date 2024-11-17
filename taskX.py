@@ -70,7 +70,7 @@ def find_vulnerable_packages_batch(packages):
         list[dict]: A list of dictionaries where each dictionary represents a vulnerable package and includes its name, version and vulnerablilites.
     """
     results = []
-    batch_size = 200  # Adjust this based on performance
+    batch_size = 200 
     for i in range(0, len(packages), batch_size):
         batch = packages[i:i + batch_size]
         batch_results = query_osv_batch(batch)
